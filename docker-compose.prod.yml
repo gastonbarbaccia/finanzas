@@ -1,0 +1,28 @@
+# Uso en el servidor:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Agrega Caddy con HTTPS automático y deja la app accesible solo a través de él.
+services:
+  app:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2
+    container_name: finanzas_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - finanzas
+
+volumes:
+  caddy_data:
+  caddy_config:

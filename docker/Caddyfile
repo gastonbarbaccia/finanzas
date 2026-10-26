@@ -1,0 +1,9 @@
+# Proxy con HTTPS automático (Let's Encrypt) para producción
+{$APP_DOMAIN} {
+    encode gzip
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        -Server
+    }
+    reverse_proxy app:80
+}
